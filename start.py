@@ -1,0 +1,2 @@
+from src.data_scrapper import fetch_and_save_data
+fetch_and_save_data()
