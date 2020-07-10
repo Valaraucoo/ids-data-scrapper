@@ -13,8 +13,6 @@ LINE_NO = "139"
 
 ROUTE_139_URL = 'http://91.223.13.70/internetservice/services/routeInfo/routeStops?routeId=8095257447305839175'
 STOP_BASE_URL = 'http://91.223.13.70/internetservice/services/passageInfo/stopPassages/stop?stop='
-OLD_HISTORY = set([])
-TO_SAVE = list()
 STOPS_139 = [stop['number'] for stop in requests.get(ROUTE_139_URL).json()['stops']]
 
 BASE_PATH = os.getcwd()
@@ -45,6 +43,8 @@ def save_vehicles(vehicles_to_save: list, path: str) -> bool:
 
 
 def fetch_and_save_data():
+    OLD_HISTORY = set([])
+    TO_SAVE = list()
     while True:
         for current_stop in STOPS_139:
             stop_url = STOP_BASE_URL + current_stop

@@ -22,4 +22,8 @@ with open("start.py", 'w') as start:
     start.write("from src.data_scrapper import fetch_and_save_data\n")
     start.write("fetch_and_save_data()")
 
+print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}Created directory {WARNING}data{ENDC}.{ENDC}")
+os.mkdir("data")
+
+
 print(f"{OKGREEN}[INFO]{ENDC}: {WARNING}Now you can run {BOLD}start.py{ENDC}")
