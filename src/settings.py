@@ -1,4 +1,12 @@
 
+# scrapping settings
+LINE_NO = "139"
+ROUTE_139_URL = 'http://91.223.13.70/internetservice/services/routeInfo/routeStops?routeId=8095257447305839175'
+STOP_BASE_URL = 'http://91.223.13.70/internetservice/services/passageInfo/stopPassages/stop?stop='
+
+# script settings
+DELAY_BETWEEN_STOPS = .5
+DELAY_BETWEEN_LOOPS = 10
 
 # colors definition
 HEADER = '\033[95m'
