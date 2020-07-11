@@ -40,7 +40,7 @@ def fetch_and_save_data(loops_delay=DELAY_BETWEEN_LOOPS, stops_delay=DELAY_BETWE
     weather_counter = 0
 
     while True:
-        if weather_counter % 20 == 0:
+        if weather_counter % WEATHER_REQUEST_LIMIT == 0:
             weather = get_weather()
             print(f"{OKGREEN}[INFO]{ENDC} {OKBLUE}{str(date.today())} {time.strftime('%H:%M')}:{ENDC} {BOLD}Getting current weather from {OKBLUE}openweathermap.org{ENDC}{ENDC}")
             weather_counter = 0
