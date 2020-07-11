@@ -54,7 +54,12 @@ def fetch_and_save_data(loops_delay=DELAY_BETWEEN_LOOPS, stops_delay=DELAY_BETWE
             weather_counter = 0
         for current_stop in STOPS_139:
             stop_url = STOP_BASE_URL + current_stop
-            trips_on_stop = [trip for trip in requests.get(stop_url).json()['old'] if trip['patternText'] == "139"]
+            try:
+                trips_on_stop = [trip for trip in requests.get(stop_url).json()['old'] if trip['patternText'] == "139"]
+            except Exception as e:
+                print(f"{FAIL}[ERROR]:{ENDC}{WARNING}{e}{ENDC}")
+                time.sleep(10)
+                continue
 
             for trip in trips_on_stop:
                 if (trip['tripId'], trip['routeId'], current_stop) not in OLD_HISTORY:
