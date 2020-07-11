@@ -9,7 +9,7 @@ from src.settings import *
 STOPS_139 = [stop['number'] for stop in requests.get(ROUTE_139_URL).json()['stops']]
 BASE_PATH = os.getcwd()
 PATH_TO_SAVE = os.path.join(BASE_PATH, "data",
-                            f"bus_data{str(uuid.uuid4())[:10]}_{str(date.today())}_{time.strftime('%H:%M')}.csv")
+                            f"data_{str(uuid.uuid4())[:10]}_{str(date.today())}_{time.strftime('%H_%M')}.csv")
 
 WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/weather?q=Kraków&appid=" + WEATHER_API_KEY
 
