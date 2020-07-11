@@ -1,6 +1,14 @@
 import os
 import pip
-from src.settings import *
+
+HEADER = '\033[95m'
+OKBLUE = '\033[94m'
+OKGREEN = '\033[92m'
+WARNING = '\033[93m'
+FAIL = '\033[91m'
+ENDC = '\033[0m'
+BOLD = '\033[1m'
+UNDERLINE = '\033[4m'
 
 
 def import_or_install(package):
@@ -15,7 +23,7 @@ with open('requirements.txt', 'r+') as file:
     for package in file:
         print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}Installing required {WARNING}{package}{ENDC}.{ENDC}")
         import_or_install(package)
-        
+
 
 with open("start.py", 'w') as start:
     print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}Creating {WARNING}start.py{ENDC}")
@@ -38,5 +46,10 @@ if not os.path.exists("data"):
 else:
     print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}Directory {WARNING}data{ENDC} already exists.{ENDC}")
 
-
-print(f"{OKGREEN}[INFO]{ENDC}: {WARNING}Now you can run {BOLD}start.py{ENDC}")
+if not os.path.exists("src/.env"):
+    print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}Created {WARNING}src/.env{ENDC} file. You can get {WARNING}WEATHER_API_KEY{ENDC} here: {OKBLUE}https://openweathermap.org/{ENDC}")
+    with open("src/.env", "w") as env:
+        env.write("WEATHER_API_KEY=<YOUR API KEY>")
+else:
+    print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}File {WARNING}src/.env{ENDC} already exists.{ENDC}")
+print(f"{OKGREEN}[INFO]{ENDC}: {WARNING}Make sure that your API KEYS are fine, after that run {BOLD}start.py{ENDC}: {OKBLUE}python3 start.py{ENDC}.")

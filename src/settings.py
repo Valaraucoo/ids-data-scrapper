@@ -1,3 +1,9 @@
+from dotenv import load_dotenv
+import os
+
+# API KEYS
+load_dotenv()
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 
 # scrapping settings
 LINE_NO = "139"
