@@ -50,6 +50,8 @@ if not os.path.exists("src/.env"):
     print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}Created {WARNING}src/.env{ENDC} file. You can get {WARNING}WEATHER_API_KEY{ENDC} here: {OKBLUE}https://openweathermap.org/{ENDC}")
     with open("src/.env", "w") as env:
         env.write("WEATHER_API_KEY=<YOUR API KEY>")
+        env.write("AZURE_ACCESS_TOKEN=<ACCESS TOKEN>")
+        env.write("AZURE_SUBSCRIPTION_KEY=<SUBSCRIPTION KEY>")
 else:
     print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}File {WARNING}src/.env{ENDC} already exists.{ENDC}")
 print(f"{OKGREEN}[INFO]{ENDC}: {WARNING}Make sure that your API KEYS are fine, after that run {BOLD}start.py{ENDC}: {OKBLUE}python3 start.py{ENDC}.")
