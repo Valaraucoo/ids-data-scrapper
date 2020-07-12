@@ -12,7 +12,7 @@ WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/weather?q=Kraków&appi
 # AZURE MAPS API settings / keys
 AZURE_ACCESS_TOKEN = os.getenv("AZURE_ACCESS_TOKEN")
 AZURE_SUBSCRIPTION_KEY = os.getenv("AZURE_SUBSCRIPTION_KEY")
-AZURE_REQUEST_LIMIT = 10
+AZURE_REQUEST_LIMIT = 3
 
 # scrapping settings
 LINE_NO = "139"

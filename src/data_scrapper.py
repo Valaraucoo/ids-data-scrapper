@@ -55,8 +55,7 @@ def fetch_and_save_data(loops_delay=DELAY_BETWEEN_LOOPS, stops_delay=DELAY_BETWE
 
     weather_counter = 0
     azure_api_counter = {stopId: 0 for stopId in STOPS_139}
-
-    flow_data = {}
+    flow_data_for_stop = {stopId: None for stopId in STOPS_139}
 
     while True:
         if weather_counter % WEATHER_REQUEST_LIMIT == 0:
@@ -84,7 +83,7 @@ def fetch_and_save_data(loops_delay=DELAY_BETWEEN_LOOPS, stops_delay=DELAY_BETWE
                             f"{OKGREEN}[INFO]{ENDC} {OKBLUE}{str(date.today())} {time.strftime('%H:%M')}:" + \
                             f"{ENDC} {BOLD}Getting flow info for stop no. {current_stop} from {OKBLUE}https://docs.microsoft.com/en-us/rest/api/maps/traffic/gettrafficflowsegment{ENDC}{ENDC}"
                         )
-                        flow_data = get_flow_data(lat=STOPS_139_COORDINATES[current_stop]['latitude'],
+                        flow_data_for_stop[current_stop] = get_flow_data(lat=STOPS_139_COORDINATES[current_stop]['latitude'],
                                                   lng=STOPS_139_COORDINATES[current_stop]['longitude'])
                         azure_api_counter[current_stop] = 0
                     azure_api_counter[current_stop] += 1
@@ -93,7 +92,7 @@ def fetch_and_save_data(loops_delay=DELAY_BETWEEN_LOOPS, stops_delay=DELAY_BETWE
                     trip['stop'] = current_stop
                     TO_SAVE.append(trip)
 
-            if save_vehicles(TO_SAVE, weather, flow_data, PATH_TO_SAVE):
+            if save_vehicles(TO_SAVE, weather, flow_data_for_stop[current_stop], PATH_TO_SAVE):
                 if len(TO_SAVE) > 0:
                     print(
                         f"{OKGREEN}[INFO]{ENDC} {OKBLUE}{str(date.today())} {time.strftime('%H:%M')}:{ENDC} successfully saved" + \
