@@ -14,7 +14,15 @@ AZURE_ACCESS_TOKEN = os.getenv("AZURE_ACCESS_TOKEN")
 AZURE_SUBSCRIPTION_KEY = os.getenv("AZURE_SUBSCRIPTION_KEY")
 AZURE_REQUEST_LIMIT = 3
 
-# Line number for scrapping
+# Firebase setup
+FIREBASE_API_KEY = os.getenv("FIREBASE_API_KEY")
+FIREBASE_AUTH_DOMAIN = "ids-store.firebaseapp.com"
+FIREBASE_DATABASE_URL = "https://ids-store.firebaseio.com"
+FIREBASE_PROJECT_ID = "ids-store"
+FIREBASE_STORAGE_BUCKET = "ids-store.appspot.com"
+
+
+# Default line number
 LINE_NO = "139"
 
 STOP_BASE_URL = 'http://91.223.13.70/internetservice/services/passageInfo/stopPassages/stop?stop='
