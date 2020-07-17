@@ -6,14 +6,10 @@ import uuid
 
 from src.settings import *
 
+
 BASE_PATH = os.getcwd()
 PATH_TO_SAVE = os.path.join(BASE_PATH, "data",
                             f"data_{str(uuid.uuid4())[:10]}_{str(date.today())}_{time.strftime('%H_%M')}.csv")
-
-ROUTE_LINE_URL = STOPS[LINE_NO]
-
-STOPS_LINE = [stop['number'] for stop in requests.get(ROUTE_LINE_URL).json()['stops']]
-STOPS_LINE_COORDINATES = {stop['shortName']:{'latitude': stop['latitude']/3599998.007, 'longitude':stop['longitude']/3600022.131} for stop in requests.get(STOPS_URL).json()['stops'] if stop['shortName'] in STOPS_LINE}
 
 
 def save_vehicles(vehicles_to_save: list, weather: object, flow_data: object, path: str) -> bool:
@@ -37,7 +33,7 @@ def save_vehicles(vehicles_to_save: list, weather: object, flow_data: object, pa
     return True
 
 
-def get_flow_data(lat, lng, token=AZURE_ACCESS_TOKEN, subscription_key=AZURE_SUBSCRIPTION_KEY,unit="KMPH"):
+def get_flow_data(lat, lng, token=AZURE_ACCESS_TOKEN, subscription_key=AZURE_SUBSCRIPTION_KEY,unit="KMPH") -> object:
     try:
         return requests.get(f"https://atlas.microsoft.com/traffic/flow/segment/json?subscription-key={subscription_key}&api-version=1.0&style=absolute&zoom=9&query={lat},{lng}&unit={unit}",
                        headers={"Authorization": f"Bearer {token}"}).json()
@@ -47,11 +43,27 @@ def get_flow_data(lat, lng, token=AZURE_ACCESS_TOKEN, subscription_key=AZURE_SUB
         return {}
 
 
-def get_weather():
-    return requests.get(WEATHER_API_URL).json()
+def get_weather() -> object:
+    try:
+        return requests.get(WEATHER_API_URL).json()
+    except Exception as e:
+        print(f"{FAIL}[ERROR]:{ENDC}{WARNING}{e}{ENDC}")
+        time.sleep(10)
+        return {}
 
 
-def fetch_and_save_data(loops_delay=DELAY_BETWEEN_LOOPS, stops_delay=DELAY_BETWEEN_STOPS) -> None:
+def fetch_and_save_data(line_no=LINE_NO, loops_delay=DELAY_BETWEEN_LOOPS, stops_delay=DELAY_BETWEEN_STOPS) -> None:
+    LINE_NO = line_no
+    try:
+        ROUTE_LINE_URL = STOPS[LINE_NO]
+    except KeyError as e:
+        print(f"{FAIL}[ERROR]: {ENDC}{WARNING}There is no bus line number {line_no}{ENDC}")
+        raise KeyError()
+
+
+    STOPS_LINE = [stop['number'] for stop in requests.get(ROUTE_LINE_URL).json()['stops']]
+    STOPS_LINE_COORDINATES = {stop['shortName']:{'latitude': stop['latitude']/3599998.007, 'longitude':stop['longitude']/3600022.131} for stop in requests.get(STOPS_URL).json()['stops'] if stop['shortName'] in STOPS_LINE}
+
     OLD_HISTORY = set([])
     TO_SAVE = list()
 
