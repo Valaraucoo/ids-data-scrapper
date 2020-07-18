@@ -15,7 +15,8 @@
     python3 setup.py
     ```
 - If everything is OK run `start.py`.
-- Collected data will be stored in `data/` directory.
+- Collected data will be stored in `Firebase`.
+- You can also load `.csv` data to `Firebase` using `load_data_from_csv.py` (manual below).
 ----------------
 
 You can change value of `LINE_NO`, `DELAY_BETWEEN_LOOPS` and `DELAY_BETWEEN_STOPS` with additional arguments in `start.py`.
@@ -42,6 +43,20 @@ python3 start.py 159 30
 python3 start.py 501 30 2
 [INFO]: LINE_NO=501 DELAY_BETWEEN_LOOPS=30, DELAY_BETWEEN_STOPS=2
 ``` 
+----------------
+### Manual for `load_data_from_csv.py`
+
+To load `.csv` data to `Firebase`'s database you can use `load_data_from_csv.py` sript. You can load data from any `.csv` files or directories.
+```bash
+python3 load_data_from_csv.py data_file.csv
+
+python3 load_data_from_csv.py data_file_1.csv data_file_2.csv
+
+python3 load_data_from_csv.py data_directory_1 data_directory_2 data_file_3.csv
+
+python3 load_data_from_csv.py path/to/data_directory path/to/data_file.csv
+```
+
 ----------------
 
 ### Parameters details
