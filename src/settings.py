@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+import pyrebase
 import os
 
 # GET ENVIROMENT VARIABLES
@@ -20,6 +21,19 @@ FIREBASE_AUTH_DOMAIN = "ids-store.firebaseapp.com"
 FIREBASE_DATABASE_URL = "https://ids-store.firebaseio.com"
 FIREBASE_PROJECT_ID = "ids-store"
 FIREBASE_STORAGE_BUCKET = "ids-store.appspot.com"
+
+FIREBASE_BASE_DOC = "bus-data"
+
+config = {
+    "apiKey": FIREBASE_API_KEY,
+    "authDomain": FIREBASE_AUTH_DOMAIN,
+    "databaseURL": FIREBASE_DATABASE_URL,
+    "projectId": FIREBASE_PROJECT_ID,
+    "storageBucket": FIREBASE_STORAGE_BUCKET,
+}
+
+firebase = pyrebase.initialize_app(config)
+db = firebase.database()
 
 
 # Default line number
