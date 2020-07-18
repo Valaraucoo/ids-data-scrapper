@@ -80,7 +80,7 @@ def fetch_and_save_data(line_no=LINE_NO, loops_delay=DELAY_BETWEEN_LOOPS, stops_
 
             if firebase_push_data(TO_SAVE, weather, flow_data_for_stop[current_stop], FIREBASE_BASE_DOC + '-' + LINE_NO):
                 if len(TO_SAVE) > 0:
-                    report_info(f"{len(TO_SAVE)} records to {HEADER}Firebase/{FIREBASE_BASE_DOC + '-' + LINE_NO}{ENDC} at stop no. {current_stop}.")
+                    report_info(f"saved {len(TO_SAVE)} records to {HEADER}Firebase/{FIREBASE_BASE_DOC + '-' + LINE_NO}{ENDC} at stop no. {current_stop}.")
                 else:
                     report_info(f"There is no new vehicles to save at stop no. {current_stop}.")
             else:
