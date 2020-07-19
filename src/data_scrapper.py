@@ -5,32 +5,8 @@ from datetime import date
 import uuid
 
 from src.settings import *
-
-
-BASE_PATH = os.getcwd()
-PATH_TO_SAVE = os.path.join(BASE_PATH, "data",
-                            f"data_{str(uuid.uuid4())[:10]}_{str(date.today())}_{time.strftime('%H_%M')}.csv")
-
-
-def save_vehicles(vehicles_to_save: list, weather: object, flow_data: object, path: str) -> bool:
-    if not vehicles_to_save:
-        return True
-    try:
-        with open(path, 'a+') as file:
-            if os.stat(path).st_size == 0:
-                file.write("tripId;routeId;stop;patternText;direction;delay;time;date;weekday;weather;temp;currSpeed;currTravelTime\n")
-            for vehicle in vehicles_to_save:
-                file.write(
-                    f"{vehicle.get('tripId', None)};{vehicle.get('routeId', None)};{vehicle.get('stop', None)};" + \
-                    f"{vehicle.get('patternText', None)};{vehicle['direction']};{vehicle.get('actualRelativeTime', None)};" + \
-                    f"{time.strftime('%H:%M')};{str(date.today())};{date.weekday(date.today())};" + \
-                    f"{weather['weather'][0]['main']};{weather['main']['temp']};" + \
-                    f"{flow_data.get('flowSegmentData').get('currentSpeed', None)};{flow_data.get('flowSegmentData').get('currentTravelTime', None)}\n"
-                )
-    except Exception as e:
-        print(e)
-        return False
-    return True
+from src.helpers import report_error, report_info
+from src.firebase_push_data import firebase_push_data
 
 
 def get_flow_data(lat, lng, token=AZURE_ACCESS_TOKEN, subscription_key=AZURE_SUBSCRIPTION_KEY,unit="KMPH") -> object:
@@ -38,7 +14,7 @@ def get_flow_data(lat, lng, token=AZURE_ACCESS_TOKEN, subscription_key=AZURE_SUB
         return requests.get(f"https://atlas.microsoft.com/traffic/flow/segment/json?subscription-key={subscription_key}&api-version=1.0&style=absolute&zoom=9&query={lat},{lng}&unit={unit}",
                        headers={"Authorization": f"Bearer {token}"}).json()
     except Exception as e:
-        print(f"{FAIL}[ERROR]:{ENDC}{WARNING}{e}{ENDC}")
+        report_error(e)
         time.sleep(10)
         return {}
 
@@ -47,7 +23,7 @@ def get_weather() -> object:
     try:
         return requests.get(WEATHER_API_URL).json()
     except Exception as e:
-        print(f"{FAIL}[ERROR]:{ENDC}{WARNING}{e}{ENDC}")
+        report_error(e)
         time.sleep(10)
         return {}
 
@@ -57,7 +33,7 @@ def fetch_and_save_data(line_no=LINE_NO, loops_delay=DELAY_BETWEEN_LOOPS, stops_
     try:
         ROUTE_LINE_URL = STOPS[LINE_NO]
     except KeyError as e:
-        print(f"{FAIL}[ERROR]: {ENDC}{WARNING}There is no bus line number {line_no}{ENDC}")
+        report_error(e, f"There is no bus line number {line_no}")
         raise KeyError()
 
 
@@ -74,10 +50,7 @@ def fetch_and_save_data(line_no=LINE_NO, loops_delay=DELAY_BETWEEN_LOOPS, stops_
     while True:
         if weather_counter % WEATHER_REQUEST_LIMIT == 0:
             weather = get_weather()
-            print(
-                f"{OKGREEN}[INFO]{ENDC} {OKBLUE}{str(date.today())} {time.strftime('%H:%M')}:" + \
-                f"{ENDC} {BOLD}Getting current weather from {OKBLUE}openweathermap.org{ENDC}{ENDC}"
-            )
+            report_info(f"Getting current weather from {OKBLUE}openweathermap.org{ENDC}")
             weather_counter = 0
 
         for current_stop in STOPS_LINE:
@@ -85,7 +58,7 @@ def fetch_and_save_data(line_no=LINE_NO, loops_delay=DELAY_BETWEEN_LOOPS, stops_
             try:
                 trips_on_stop = [trip for trip in requests.get(stop_url).json()['old'] if trip['patternText'] == LINE_NO]
             except Exception as e:
-                print(f"{FAIL}[ERROR]:{ENDC}{WARNING}{e}{ENDC}")
+                report_error(e)
                 time.sleep(10)
                 continue
 
@@ -93,10 +66,7 @@ def fetch_and_save_data(line_no=LINE_NO, loops_delay=DELAY_BETWEEN_LOOPS, stops_
                 if (trip['tripId'], trip['routeId'], current_stop) not in OLD_HISTORY:
 
                     if azure_api_counter[current_stop] % AZURE_REQUEST_LIMIT == 0:
-                        print(
-                            f"{OKGREEN}[INFO]{ENDC} {OKBLUE}{str(date.today())} {time.strftime('%H:%M')}:" + \
-                            f"{ENDC} {BOLD}Getting flow info for stop no. {current_stop} from {OKBLUE}https://docs.microsoft.com/en-us/rest/api/maps/traffic/gettrafficflowsegment{ENDC}{ENDC}"
-                        )
+                        report_info(f"Getting flow info for stop no. {current_stop} from {OKBLUE}https://docs.microsoft.com/en-us/rest/api/maps/traffic/gettrafficflowsegment{ENDC}")
                         flow_data_for_stop[current_stop] = get_flow_data(
                                                 lat=STOPS_LINE_COORDINATES[current_stop]['latitude'],
                                                 lng=STOPS_LINE_COORDINATES[current_stop]['longitude']
@@ -108,27 +78,15 @@ def fetch_and_save_data(line_no=LINE_NO, loops_delay=DELAY_BETWEEN_LOOPS, stops_
                     trip['stop'] = current_stop
                     TO_SAVE.append(trip)
 
-            if save_vehicles(TO_SAVE, weather, flow_data_for_stop[current_stop], PATH_TO_SAVE):
+            if firebase_push_data(TO_SAVE, weather, flow_data_for_stop[current_stop], FIREBASE_BASE_DOC + '-' + LINE_NO):
                 if len(TO_SAVE) > 0:
-                    print(
-                        f"{OKGREEN}[INFO]{ENDC} {OKBLUE}{str(date.today())} {time.strftime('%H:%M')}:{ENDC} successfully saved" + \
-                        f"{len(TO_SAVE)} records to {HEADER}{PATH_TO_SAVE}{ENDC} at stop no. {current_stop}."
-                    )
+                    report_info(f"saved {len(TO_SAVE)} records to {HEADER}Firebase/{FIREBASE_BASE_DOC + '-' + LINE_NO}{ENDC} at stop no. {current_stop}.")
                 else:
-                    print(
-                        f"{OKGREEN}[INFO]{ENDC} {OKBLUE}{str(date.today())} {time.strftime('%H:%M')}:" + \
-                        f"{ENDC} There is no new vehicles to save at stop no. {current_stop}."
-                    )
+                    report_info(f"There is no new vehicles to save at stop no. {current_stop}.")
             else:
-                print(
-                    f"{FAIL}[ERROR]{ENDC} {WARNING}{str(date.today())} {time.strftime('%H:%M')}:" + \
-                    f"{ENDC} {HEADER}something went wrong.{ENDC}"
-                )
+                report_error(f"{HEADER}something went wrong.{ENDC}")
             TO_SAVE = []
             time.sleep(stops_delay)
         weather_counter += 1
-        print(
-            f"{OKGREEN}[INFO]{ENDC} {OKBLUE}{str(date.today())} {time.strftime('%H:%M')}:" + \
-            f"{ENDC} {BOLD}sleeping for {loops_delay} seconds.{ENDC}"
-        )
+        report_info("sleeping for {loops_delay} seconds.")
         time.sleep(loops_delay)

@@ -43,18 +43,13 @@ with open("start.py", 'w') as start:
     start.write("   print(f'{OKGREEN}[INFO]{ENDC}: {BOLD}DELAY_BETWEEN_LOOPS={DELAY_BETWEEN_LOOPS}, DELAY_BETWEEN_STOPS={DELAY_BETWEEN_STOPS}{ENDC}')\n")
     start.write("   fetch_and_save_data()")
 
-if not os.path.exists("data"):
-    print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}Created directory {WARNING}data{ENDC}.{ENDC}")
-    os.mkdir("data")
-else:
-    print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}Directory {WARNING}data{ENDC} already exists.{ENDC}")
-
 if not os.path.exists("src/.env"):
     print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}Created {WARNING}src/.env{ENDC} file. You can get {WARNING}WEATHER_API_KEY{ENDC} here: {OKBLUE}https://openweathermap.org/{ENDC}")
     with open("src/.env", "w") as env:
-        env.write("WEATHER_API_KEY=<YOUR API KEY>")
-        env.write("AZURE_ACCESS_TOKEN=<ACCESS TOKEN>")
-        env.write("AZURE_SUBSCRIPTION_KEY=<SUBSCRIPTION KEY>")
+        env.write("WEATHER_API_KEY=<YOUR API KEY>\n")
+        env.write("AZURE_ACCESS_TOKEN=<ACCESS TOKEN>\n")
+        env.write("AZURE_SUBSCRIPTION_KEY=<SUBSCRIPTION KEY>\n")
+        env.write("FIREBASE_API_KEY=<API KEY>\n")
 else:
     print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}File {WARNING}src/.env{ENDC} already exists.{ENDC}")
 print(f"{OKGREEN}[INFO]{ENDC}: {WARNING}Make sure that your API KEYS are fine, after that run {BOLD}start.py{ENDC}: {OKBLUE}python3 start.py{ENDC}.")
