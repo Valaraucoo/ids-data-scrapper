@@ -26,22 +26,42 @@ Parameter  | Description
   `LINE_NO`  | Bus line number, it must be one value from the specified list (below).
   `DELAY_BETWEEN_LOOPS`  | Delay between execution of the query loop to the [TTSS](http://www.ttss.krakow.pl/).
   `DELAY_BETWEEN_STOPS`| Delay execution of the query between each stop per specified `LINE_NO`.
+
+For more informations try `python3 start.py -h` or `python3 start.py --help`:
+
+```
+usage: start.py [-h] [-l LOOPS] [-s STOPS] line_number
+
+positional arguments:
+  line_number           Bus line number, it must be one value from the specified list.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -l LOOPS, --loops LOOPS
+                        Delay between execution of the query loop.
+  -s STOPS, --stops STOPS
+                        Delay execution of the query between each stop per specified line_number.
+```
+### Examples:
 ```bash
 # default
-python3 start.py
-[INFO]: LINE_NO=139 DELAY_BETWEEN_LOOPS=20, DELAY_BETWEEN_STOPS=1.2
+python3 start.py 139
+[INFO]: Line number: 139, loops delay: 5, stops delay: 0.5.
 
 # manually set LINE_NO
 python3 start.py 144
-[INFO]: LINE_NO=144 DELAY_BETWEEN_LOOPS=20, DELAY_BETWEEN_STOPS=1.2
+[INFO]: Line number: 144, loops delay: 5, stops delay: 0.5.
 
 # manually set DELAY_BETWEEN_LOOPS
-python3 start.py 159 30
-[INFO]: LINE_NO=159 DELAY_BETWEEN_LOOPS=30, DELAY_BETWEEN_STOPS=1.2
+python3 start.py 159 -l 30
+[INFO]: Line number: 159, loops delay: 30, stops delay: 0.5.
 
 # manually set DELAY_BETWEEN_LOOPS and DELAY_BETWEEN_STOPS
-python3 start.py 501 30 2
-[INFO]: LINE_NO=501 DELAY_BETWEEN_LOOPS=30, DELAY_BETWEEN_STOPS=2
+python3 start.py 501 -l 30 --stops=2
+[INFO]: Line number: 501, loops delay: 30, stops delay: 2.
+
+python3 start.py 139 -loops=10 --stops=2
+[INFO]: Line number: 139, loops delay: 10, stops delay: 2.
 ``` 
 ----------------
 ### Manual for `load_data_from_csv.py`

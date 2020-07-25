@@ -43,8 +43,8 @@ STOP_BASE_URL = 'http://91.223.13.70/internetservice/services/passageInfo/stopPa
 STOPS_URL = 'http://91.223.13.70/internetservice/geoserviceDispatcher/services/stopinfo/stops?left=-658000000&bottom=-324000000&right=648000000&top=324000000'
 
 # scrapping settings
-DELAY_BETWEEN_STOPS = 1.2
-DELAY_BETWEEN_LOOPS = 20
+DELAY_BETWEEN_STOPS = .5
+DELAY_BETWEEN_LOOPS = 5
 
 # colors definition
 HEADER = '\033[95m'

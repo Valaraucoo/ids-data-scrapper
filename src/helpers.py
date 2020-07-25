@@ -11,4 +11,4 @@ def report_info(msg: str) -> None:
 
 
 def report_error(err: str, arg="") -> None:
-    print(f"{FAIL}[ERROR] {str(date.today())} {time.strftime('%H:%M')}:{ENDC}{WARNING}{err} {args}{ENDC}")
+    print(f"{FAIL}[ERROR] {str(date.today())} {time.strftime('%H:%M')}:{ENDC}{WARNING}{err} {arg}{ENDC}")
