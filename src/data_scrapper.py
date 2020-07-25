@@ -5,27 +5,17 @@ from datetime import date
 import uuid
 
 from src.settings import *
-from src.helpers import report_error, report_info
+from src.helpers import report_error, report_info, fetch_error_handler
 from src.firebase_push_data import firebase_push_data
 
-
+@fetch_error_handler
 def get_flow_data(lat, lng, token=AZURE_ACCESS_TOKEN, subscription_key=AZURE_SUBSCRIPTION_KEY,unit="KMPH") -> object:
-    try:
-        return requests.get(f"https://atlas.microsoft.com/traffic/flow/segment/json?subscription-key={subscription_key}&api-version=1.0&style=absolute&zoom=9&query={lat},{lng}&unit={unit}",
+    return requests.get(f"https://atlas.microsoft.com/traffic/flow/segment/json?subscription-key={subscription_key}&api-version=1.0&style=absolute&zoom=9&query={lat},{lng}&unit={unit}",
                        headers={"Authorization": f"Bearer {token}"}).json()
-    except Exception as e:
-        report_error(e)
-        time.sleep(10)
-        return {}
 
-
+@fetch_error_handler
 def get_weather() -> object:
-    try:
-        return requests.get(WEATHER_API_URL).json()
-    except Exception as e:
-        report_error(e)
-        time.sleep(10)
-        return {}
+    return requests.get(WEATHER_API_URL).json()
 
 
 def fetch_and_save_data(line_no=LINE_NO, loops_delay=DELAY_BETWEEN_LOOPS, stops_delay=DELAY_BETWEEN_STOPS) -> None:
