@@ -30,7 +30,7 @@ Parameter  | Description
 For more informations try `python3 start.py -h` or `python3 start.py --help`:
 
 ```
-usage: start.py [-h] [-l LOOPS] [-s STOPS] line_number
+usage: start.py [-h] [-l LOOPS] [-s STOPS] [-d DOC] line_number
 
 positional arguments:
   line_number           Bus line number, it must be one value from the specified list.
@@ -41,6 +41,7 @@ optional arguments:
                         Delay between execution of the query loop.
   -s STOPS, --stops STOPS
                         Delay execution of the query between each stop per specified line_number.
+  -d DOC, --doc DOC     Doc name to firebase.
 ```
 ### Examples:
 ```bash
@@ -60,8 +61,12 @@ python3 start.py 159 -l 30
 python3 start.py 501 -l 30 --stops=2
 [INFO]: Line number: 501, loops delay: 30, stops delay: 2.
 
-python3 start.py 139 -loops=10 --stops=2
+python3 start.py 139 --loops=10 --stops=2
 [INFO]: Line number: 139, loops delay: 10, stops delay: 2.
+
+# You can manually specify docname in Firebase where the data will be saved.
+python3 start.py 164 --doc=exampleDocName --loops=10
+[INFO]: Line number: 164, loops delay: 10, stops delay: 0.5.
 ``` 
 ----------------
 ### Manual for `load_data_from_csv.py`
