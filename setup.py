@@ -27,34 +27,40 @@ with open('requirements.txt', 'r+') as file:
 
 with open("start.py", 'w') as start:
     print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}Creating {WARNING}start.py{ENDC}")
-    start.write("from src.data_scrapper import fetch_and_save_data\n")
-    start.write("from src.settings import *\n")
-    start.write("import sys\n")
-    start.write("if len(sys.argv) == 2:\n")
-    start.write('   print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}LINE_NO={sys.argv[1]} DELAY_BETWEEN_LOOPS={DELAY_BETWEEN_LOOPS}, DELAY_BETWEEN_STOPS={DELAY_BETWEEN_STOPS}{ENDC}") \n')
-    start.write("   fetch_and_save_data(line_no=sys.argv[1])\n")
-    start.write("elif len(sys.argv) == 3:\n")
-    start.write('   print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}LINE_NO={sys.argv[1]} DELAY_BETWEEN_LOOPS={sys.argv[2]}, DELAY_BETWEEN_STOPS={DELAY_BETWEEN_STOPS}{ENDC}")\n')
-    start.write("   fetch_and_save_data(line_no=sys.argv[1],loops_delay=float(sys.argv[2]))\n")
-    start.write("elif len(sys.argv) == 4:\n")
-    start.write('   print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}LINE_NO={sys.argv[1]} DELAY_BETWEEN_LOOPS={sys.argv[2]}, DELAY_BETWEEN_STOPS={sys.argv[3]}{ENDC}")\n')
-    start.write("   fetch_and_save_data(line_no=sys.argv[1],loops_delay=float(sys.argv[2]), stops_delay=float(sys.argv[3]))\n")
-    start.write("else:\n")
-    start.write("   print(f'{OKGREEN}[INFO]{ENDC}: {BOLD}DELAY_BETWEEN_LOOPS={DELAY_BETWEEN_LOOPS}, DELAY_BETWEEN_STOPS={DELAY_BETWEEN_STOPS}{ENDC}')\n")
-    start.write("   fetch_and_save_data()")
+    start.write("""
+import argparse 
 
-if not os.path.exists("data"):
-    print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}Created directory {WARNING}data{ENDC}.{ENDC}")
-    os.mkdir("data")
-else:
-    print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}Directory {WARNING}data{ENDC} already exists.{ENDC}")
+from src.data_scrapper import fetch_and_save_data
+from src.settings import *
+from src.helpers import report_info
+
+if __name__ == '__main__':
+   parser = argparse.ArgumentParser()
+   parser.add_argument("line_number", 
+                        help="Bus line number, it must be one value from the specified list.", 
+                        type=str)
+   parser.add_argument("-l", "--loops", 
+                        help="Delay between execution of the query loop.", 
+                        type=float)
+   parser.add_argument("-s", "--stops", 
+                        help="Delay execution of the query between each stop per specified line_number.",
+                        type=float)
+
+   args = parser.parse_args()
+
+   loops_delay = args.loops if args.loops else DELAY_BETWEEN_LOOPS
+   stops_delay = args.stops if args.stops else DELAY_BETWEEN_STOPS
+
+   report_info(f"Line number: {args.line_number}, loops delay: {loops_delay}, stops delay: {stops_delay}.")
+   fetch_and_save_data(line_no=args.line_number, loops_delay=loops_delay, stops_delay=stops_delay)""")
 
 if not os.path.exists("src/.env"):
     print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}Created {WARNING}src/.env{ENDC} file. You can get {WARNING}WEATHER_API_KEY{ENDC} here: {OKBLUE}https://openweathermap.org/{ENDC}")
     with open("src/.env", "w") as env:
-        env.write("WEATHER_API_KEY=<YOUR API KEY>")
-        env.write("AZURE_ACCESS_TOKEN=<ACCESS TOKEN>")
-        env.write("AZURE_SUBSCRIPTION_KEY=<SUBSCRIPTION KEY>")
+        env.write("WEATHER_API_KEY=<YOUR API KEY>\n")
+        env.write("AZURE_ACCESS_TOKEN=<ACCESS TOKEN>\n")
+        env.write("AZURE_SUBSCRIPTION_KEY=<SUBSCRIPTION KEY>\n")
+        env.write("FIREBASE_API_KEY=<API KEY>\n")
 else:
     print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}File {WARNING}src/.env{ENDC} already exists.{ENDC}")
 print(f"{OKGREEN}[INFO]{ENDC}: {WARNING}Make sure that your API KEYS are fine, after that run {BOLD}start.py{ENDC}: {OKBLUE}python3 start.py{ENDC}.")

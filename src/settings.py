@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+import pyrebase
 import os
 
 # GET ENVIROMENT VARIABLES
@@ -14,15 +15,36 @@ AZURE_ACCESS_TOKEN = os.getenv("AZURE_ACCESS_TOKEN")
 AZURE_SUBSCRIPTION_KEY = os.getenv("AZURE_SUBSCRIPTION_KEY")
 AZURE_REQUEST_LIMIT = 3
 
-# Line number for scrapping
+# Firebase setup
+FIREBASE_API_KEY = os.getenv("FIREBASE_API_KEY")
+FIREBASE_AUTH_DOMAIN = "ids-store.firebaseapp.com"
+FIREBASE_DATABASE_URL = "https://ids-store.firebaseio.com"
+FIREBASE_PROJECT_ID = "ids-store"
+FIREBASE_STORAGE_BUCKET = "ids-store.appspot.com"
+
+FIREBASE_BASE_DOC = "bus-data"
+
+config = {
+    "apiKey": FIREBASE_API_KEY,
+    "authDomain": FIREBASE_AUTH_DOMAIN,
+    "databaseURL": FIREBASE_DATABASE_URL,
+    "projectId": FIREBASE_PROJECT_ID,
+    "storageBucket": FIREBASE_STORAGE_BUCKET,
+}
+
+firebase = pyrebase.initialize_app(config)
+db = firebase.database()
+
+
+# Default line number
 LINE_NO = "139"
 
 STOP_BASE_URL = 'http://91.223.13.70/internetservice/services/passageInfo/stopPassages/stop?stop='
 STOPS_URL = 'http://91.223.13.70/internetservice/geoserviceDispatcher/services/stopinfo/stops?left=-658000000&bottom=-324000000&right=648000000&top=324000000'
 
 # scrapping settings
-DELAY_BETWEEN_STOPS = 1.2
-DELAY_BETWEEN_LOOPS = 20
+DELAY_BETWEEN_STOPS = .5
+DELAY_BETWEEN_LOOPS = 5
 
 # colors definition
 HEADER = '\033[95m'
