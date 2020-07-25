@@ -45,14 +45,19 @@ if __name__ == '__main__':
    parser.add_argument("-s", "--stops", 
                         help="Delay execution of the query between each stop per specified line_number.",
                         type=float)
+   parser.add_argument("-d", "--doc",
+                        help="Doc name to firebase.",
+                        type=str)
 
    args = parser.parse_args()
 
    loops_delay = args.loops if args.loops else DELAY_BETWEEN_LOOPS
    stops_delay = args.stops if args.stops else DELAY_BETWEEN_STOPS
+   docname = args.doc if args.doc else FIREBASE_BASE_DOC
 
    report_info(f"Line number: {args.line_number}, loops delay: {loops_delay}, stops delay: {stops_delay}.")
-   fetch_and_save_data(line_no=args.line_number, loops_delay=loops_delay, stops_delay=stops_delay)""")
+   fetch_and_save_data(line_no=args.line_number, loops_delay=loops_delay, stops_delay=stops_delay, doc=docname)
+   """)
 
 if not os.path.exists("src/.env"):
     print(f"{OKGREEN}[INFO]{ENDC}: {BOLD}Created {WARNING}src/.env{ENDC} file. You can get {WARNING}WEATHER_API_KEY{ENDC} here: {OKBLUE}https://openweathermap.org/{ENDC}")

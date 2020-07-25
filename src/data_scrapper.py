@@ -18,7 +18,7 @@ def get_weather() -> object:
     return requests.get(WEATHER_API_URL).json()
 
 
-def fetch_and_save_data(line_no=LINE_NO, loops_delay=DELAY_BETWEEN_LOOPS, stops_delay=DELAY_BETWEEN_STOPS) -> None:
+def fetch_and_save_data(line_no=LINE_NO, loops_delay=DELAY_BETWEEN_LOOPS, stops_delay=DELAY_BETWEEN_STOPS, doc=FIREBASE_BASE_DOC) -> None:
     LINE_NO = line_no
     try:
         ROUTE_LINE_URL = STOPS[LINE_NO]
@@ -68,9 +68,9 @@ def fetch_and_save_data(line_no=LINE_NO, loops_delay=DELAY_BETWEEN_LOOPS, stops_
                     trip['stop'] = current_stop
                     TO_SAVE.append(trip)
 
-            if firebase_push_data(TO_SAVE, weather, flow_data_for_stop[current_stop], FIREBASE_BASE_DOC + '-' + LINE_NO):
+            if firebase_push_data(TO_SAVE, weather, flow_data_for_stop[current_stop], doc + '-' + LINE_NO):
                 if len(TO_SAVE) > 0:
-                    report_info(f"saved {len(TO_SAVE)} records to {HEADER}Firebase/{FIREBASE_BASE_DOC + '-' + LINE_NO}{ENDC} at stop no. {current_stop}.")
+                    report_info(f"saved {len(TO_SAVE)} records to {HEADER}Firebase/{doc + '-' + LINE_NO}{ENDC} at stop no. {current_stop}.")
                 else:
                     report_info(f"There is no new vehicles to save at stop no. {current_stop}.")
             else:

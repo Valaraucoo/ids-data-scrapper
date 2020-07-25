@@ -3,8 +3,10 @@ from src.helpers import report_error
 from datetime import date
 import time
 
+from typing import List, Dict
 
-def firebase_push_data(vehicles: list, weather: object, flow_data: object, doc="bus-data") -> bool:
+
+def firebase_push_data(vehicles: List[Dict], weather: object, flow_data: Dict, doc=FIREBASE_BASE_DOC) -> bool:
     if not vehicles:
         return True
 
@@ -32,7 +34,7 @@ def firebase_push_data(vehicles: list, weather: object, flow_data: object, doc="
     return True
 
 
-def firebase_push_record(record) -> bool:
+def firebase_push_record(record: Dict, doc=FIREBASE_BASE_DOC) -> bool:
     record = record.strip().split(";")
     if len(record) != 13:
         for _ in range(13 - len(record)):
@@ -52,7 +54,7 @@ def firebase_push_record(record) -> bool:
         "currSpeed":        record[11],
         "currTravelTime":   record[12]
     }
-    doc = FIREBASE_BASE_DOC + "-" + data["patternText"]
+    doc = doc + "-" + data["patternText"]
     try:
         db.child(doc).push(data)
     except Exception as err:

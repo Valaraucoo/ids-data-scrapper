@@ -19,7 +19,7 @@ def fetch_error_handler(func):
         try:
             return func(*args, **kwargs)
         except Exception as err:
-            report_error(err, "sleeping after error for 5 seconds.")
+            report_error(err, arg="sleeping after error for 5 seconds.")
             time.sleep(5)
             return {}
     return wrapper
