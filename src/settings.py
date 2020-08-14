@@ -22,7 +22,7 @@ FIREBASE_DATABASE_URL = "https://ids-store.firebaseio.com"
 FIREBASE_PROJECT_ID = "ids-store"
 FIREBASE_STORAGE_BUCKET = "ids-store.appspot.com"
 
-FIREBASE_BASE_DOC = "bus-data"
+FIREBASE_BASE_DOC = "bus-dataV3"
 
 config = {
     "apiKey": FIREBASE_API_KEY,

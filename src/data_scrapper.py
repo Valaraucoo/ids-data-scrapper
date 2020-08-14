@@ -8,10 +8,12 @@ from src.settings import *
 from src.helpers import report_error, report_info, fetch_error_handler
 from src.firebase_push_data import firebase_push_data
 
+
 @fetch_error_handler
 def get_flow_data(lat, lng, token=AZURE_ACCESS_TOKEN, subscription_key=AZURE_SUBSCRIPTION_KEY,unit="KMPH") -> object:
     return requests.get(f"https://atlas.microsoft.com/traffic/flow/segment/json?subscription-key={subscription_key}&api-version=1.0&style=absolute&zoom=9&query={lat},{lng}&unit={unit}",
                        headers={"Authorization": f"Bearer {token}"}).json()
+
 
 @fetch_error_handler
 def get_weather() -> object:
@@ -28,7 +30,9 @@ def fetch_and_save_data(line_no=LINE_NO, loops_delay=DELAY_BETWEEN_LOOPS, stops_
 
 
     STOPS_LINE = [stop['number'] for stop in requests.get(ROUTE_LINE_URL).json()['stops']]
-    STOPS_LINE_COORDINATES = {stop['shortName']:{'latitude': stop['latitude']/3599998.007, 'longitude':stop['longitude']/3600022.131} for stop in requests.get(STOPS_URL).json()['stops'] if stop['shortName'] in STOPS_LINE}
+    STOPS_LINE_COORDINATES = {
+        stop['shortName']: {'latitude': stop['latitude']/3599998.007, 'longitude':stop['longitude']/3600022.131}
+        for stop in requests.get(STOPS_URL).json()['stops'] if stop['shortName'] in STOPS_LINE}
 
     OLD_HISTORY = set([])
     TO_SAVE = list()

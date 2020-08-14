@@ -11,23 +11,29 @@ def firebase_push_data(vehicles: List[Dict], weather: object, flow_data: Dict, d
         return True
 
     for vehicle in vehicles:
-        data = {
-            "tripId":           vehicle.get("tripId"),
-            "routeId":          vehicle.get("routeId"),
-            "stop":             vehicle.get("stop"),
-            "patternText":      vehicle.get("patternText"),
-            "direction":        vehicle.get("direction"),
-            "delay":            vehicle.get("actualRelativeTime"),
-            "time":             time.strftime('%H:%M'),
-            "date":             str(date.today()),
-            "weekday":          date.weekday(date.today()),
-            "weather":          weather['weather'][0]['main'],
-            "temp":             weather['main']['temp'],
-            "currSpeed":        flow_data.get("flowSegmentData").get("currentSpeed"),
-            "currTravelTime":   flow_data.get("flowSegmentData").get("currentTravelTime")
-        }
         try:
+            data = {
+                "tripId": vehicle.get("tripId"),
+                "routeId": vehicle.get("routeId"),
+                "stop": vehicle.get("stop"),
+                "patternText": vehicle.get("patternText"),
+                "direction": vehicle.get("direction"),
+                "delay": vehicle.get("actualRelativeTime"),
+                "plannedTime": vehicle.get("plannedTime"),
+                "time": time.strftime("%H:%M:%S"),
+                "date": str(date.today()),
+                "weekday": date.weekday(date.today()),
+                "weather": weather['weather'][0]['main'],
+                "temp": weather['main']['temp']
+            }
+            try:
+                data["currSpeed"] = flow_data.get("flowSegmentData").get("currentSpeed")
+                data["currTravelTime"] = flow_data.get("flowSegmentData").get("currentTravelTime")
+            except:
+                data["currSpeed"] = None
+                data["currTravelTime"] = None
             db.child(doc).push(data)
+            print(data)
         except Exception as err:
             report_error(err)
             return False
